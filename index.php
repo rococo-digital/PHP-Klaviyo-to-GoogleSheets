@@ -5,12 +5,17 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 include('klaviyo-download.php');
+include('google-sheets-upload.php');
+
+$sheet = new GoogleSheetIntegration();
+
+$sheet->connectToSheet();
 
 $now = new DateTime();
 $back = $now->sub(DateInterval::createFromDateString('30 days'));
-// echo $back->format('U');
+$data = getMetrics($back->format('U'));
 
-getMetrics($back->format('U'));
-
+$sheet->updateSheet(json_decode($data, true));
+// 
 
 ?>
